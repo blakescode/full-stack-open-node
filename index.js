@@ -26,6 +26,10 @@ let persons = [
   }
 ]
 
+const generateNewId = () => {
+  return Math.floor(Math.random() * 10000)
+}
+
 app.get('/', (request, response) => {
   response.send('<h1>try /api/persons</h1>')
 })
@@ -52,6 +56,39 @@ app.get('/info', (request, response) => {
       <p>${requestTime.toString()}</p>
       `
   )
+})
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: 'name or number missing'
+    })
+  }
+
+  if (persons.find(p => p.name === body.name)) {
+    return response.status(409).json({
+      error: 'person already exists in phonebook'
+    })
+  }
+
+  const personToAdd = {
+    id: generateNewId(),
+    name: body.name,
+    number: body.number,
+  }
+
+  persons = persons.concat(personToAdd)
+
+  response.json(personToAdd)
+})
+
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  persons = persons.filter(p => p.id !== id)
+
+  response.status(204).end()
 })
 
 const PORT = 3001
