@@ -1,13 +1,35 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 
-// setup the logger
 app.use(morgan(':method :url :status :req[content-length] :response-time ms - :body'))
+
+let notes = [
+  {
+    "id": 1,
+    "content": "HTML is easy",
+    "date": "2019-05-30T17:30:31.098Z",
+    "important": true
+  },
+  {
+    "id": 2,
+    "content": "Browser can execute only JavaScript",
+    "date": "2019-05-30T18:39:34.091Z",
+    "important": true
+  },
+  {
+    "id": 3,
+    "content": "GET and POST are the most important methods of HTTP protocol",
+    "date": "2019-05-30T19:20:14.298Z",
+    "important": false
+  }
+]
 
 let persons = [
   { 
@@ -40,6 +62,8 @@ app.get('/', (request, response) => {
   response.send('<h1>try /api/persons</h1>')
 })
 
+// persons API
+
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
@@ -52,16 +76,6 @@ app.get('/api/persons/:id', (request, response) => {
   } else {
     response.status(404).end()
   }
-})
-
-app.get('/info', (request, response) => {
-  const requestTime = new Date()
-  response.send(
-      `
-      <p>Phonebook has info for ${persons.length} people</p>
-      <p>${requestTime.toString()}</p>
-      `
-  )
 })
 
 app.post('/api/persons', (request, response) => {
@@ -97,13 +111,29 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
+app.get('/info', (request, response) => {
+  const requestTime = new Date()
+  response.send(
+      `
+      <p>Phonebook has info for ${persons.length} people</p>
+      <p>${requestTime.toString()}</p>
+      `
+  )
+})
+
+// notes API
+
+app.get('/api/notes', (request, response) => {
+  response.json(notes)
+})
+
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
