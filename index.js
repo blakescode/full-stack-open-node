@@ -170,7 +170,7 @@ app.put('/api/notes/:id', (request, response) => {
   const indexToUpdate = notes.findIndex(note => note.id === id)
   if (indexToUpdate >= 0) {
     notes[indexToUpdate] = request.body;
-    response.status(200).end()
+    response.json(notes[indexToUpdate])
   } else {
     response.status(404).end()
   }
