@@ -105,6 +105,17 @@ app.post('/api/persons', (request, response) => {
   response.json(personToAdd)
 })
 
+app.put('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const indexToUpdate = persons.findIndex(person => person.id === id)
+  if (indexToUpdate >= 0) {
+    persons[indexToUpdate] = request.body;
+    response.json(persons[indexToUpdate])
+  } else {
+    response.status(404).end()
+  }
+})
+
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   persons = persons.filter(p => p.id !== id)
