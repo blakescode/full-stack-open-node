@@ -165,6 +165,17 @@ app.post('/api/notes', (request, response) => {
   response.json(noteToAdd)
 })
 
+app.put('/api/notes/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const indexToUpdate = notes.findIndex(note => note.id === id)
+  if (indexToUpdate >= 0) {
+    notes[indexToUpdate] = request.body;
+    response.status(200).end()
+  } else {
+    response.status(404).end()
+  }
+})
+
 app.delete('/api/notes/:id', (request, response) => {
   const id = Number(request.params.id)
   notes = notes.filter(note => note.id === id)
