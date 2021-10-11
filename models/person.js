@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 require('dotenv').config();
 
-const url = process.env.MONGODB_NOTES_URI
+const url = process.env.MONGODB_PERSONS_URI
 
 console.log('connecting to', url)
 
@@ -13,13 +13,12 @@ mongoose.connect(url)
     console.log('error connecting to MongoDB:', error.message)
   })
 
-const noteSchema = new mongoose.Schema({
-  content: String,
-  date: Date,
-  important: Boolean,
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: String,
 })
 
-noteSchema.set('toJSON', {
+personSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
@@ -27,4 +26,4 @@ noteSchema.set('toJSON', {
   }
 })
 
-module.exports = mongoose.model('Note', noteSchema)
+module.exports = mongoose.model('Person', personSchema)
